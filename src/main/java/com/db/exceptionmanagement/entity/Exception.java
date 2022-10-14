@@ -1,4 +1,4 @@
-package com.db.exceptionmanagement.Entity;
+package com.db.exceptionmanagement.entity;
 
 import lombok.Data;
 
