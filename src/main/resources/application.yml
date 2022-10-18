@@ -1,0 +1,9 @@
+spring:
+  jpa:
+    hibernate:
+      ddl-auto: update
+  datasource:
+    url: jdbc:mysql://${env.MYSQL_HOST:localhost}:${env.MYSQL_PORT:3306}/${env.MYSQL_DATABASE}
+    username: ${env.MYSQL_USER}
+    password: ${env.MYSQL_PASSWORD}
+    driver-class-name: com.mysql.cj.jdbc.Driver
