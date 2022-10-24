@@ -1,0 +1,122 @@
+openapi: 3.0.3
+info:
+  title: Exception Management Microservice
+  description:  Exception Management Microservice
+  version: 1.0.0
+servers:
+  - url: 'https'
+   
+paths: 
+  
+  /exceptions:
+
+    get:
+      tags:
+         - ExceptionLogs
+      summary: returns list of Exceptions
+      description: returns list of exceptions
+      operationId: getExceptionLogs
+      responses:
+        200: 
+          description: Ok
+          content:
+            application/json:
+             schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Exception'
+        '500':
+            description: Internal Server Error          
+    post:
+        summary: Post new ExceptionLog
+        description: Post new ExceptionLog
+        operationId: PostExceptionLog
+        tags:
+          - ExceptionLogs
+        requestBody:
+          description: Post ExceptionLog
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExceptionsRequest'
+          required: true
+        responses:
+          '200':
+            description: Successful operation
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/ExceptionsResponse'
+          '400':
+            description: Invalid input
+          '500':
+            description: Internal Server Error  
+    
+          
+  /exceptions/{id}:
+  
+    get:
+      tags:
+         - Shows
+      summary: returns a Log
+      description: return details of a Log given its id
+      operationId: getExceptionLog
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        200: 
+          description: Ok     
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Exception'
+        '404':
+          description: Invalid input
+        '500':
+          description: Internal Server Error          
+  
+components:
+    schemas:
+        ExceptionsRequest:
+          type: object
+          properties:
+            name:
+                type: string
+            type:
+              type: string
+            message:
+              type: string
+            trace:
+              type: string
+            cobDate:
+              type: string
+        ExceptionsResponse:
+          type: object
+          properties:
+            ExceptionLog:
+              type: array
+              items:
+                $ref: '#/components/schemas/Exception'
+        Exception:
+          type: object
+          properties:
+              id:
+                type: integer
+              name:
+                type: string
+              type:
+                type: string
+              message:
+                type: string
+              trace:
+                type: string
+              cobDate:
+                type: string
+
+             
+       
