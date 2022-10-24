@@ -8,34 +8,40 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 @Controller
 @RequestMapping(path="/exceptions")
-public class ExceptionController {
+public class ExceptionLogController {
 
     private final ExceptionLogService exceptionLogService;
     private final ExceptionLogRepository exceptionLogRepository;
 
-    public ExceptionController(ExceptionLogService exceptionLogService, ExceptionLogRepository exceptionLogRepository) {
+    public ExceptionLogController(ExceptionLogService exceptionLogService, ExceptionLogRepository exceptionLogRepository) {
         this.exceptionLogService = exceptionLogService;
         this.exceptionLogRepository = exceptionLogRepository;
     }
 
-    @PostMapping(path="/add")
+    @PostMapping(path="")
     public @ResponseBody ResponseEntity<ExceptionLog> addNewExceptionLog (@RequestBody ExceptionLog newExceptionLog) {
 
         exceptionLogRepository.save(newExceptionLog);
 
-        return new ResponseEntity<ExceptionLog>(newExceptionLog, HttpStatus.OK);
+        return new ResponseEntity(newExceptionLog, HttpStatus.OK);
 
     }
 
-    @GetMapping(path="/all")
+    @GetMapping(path="")
     public @ResponseBody List<ExceptionLog> getAllExceptionLogs() {
-        // This returns a JSON or XML with the exceptions
         return exceptionLogService.findAll();
     }
+
+    @GetMapping(path="/{id}")
+    public @ResponseBody Optional<ExceptionLog> getExceptionLogById(@PathVariable int id) {
+        return exceptionLogService.findById(id);
+    }
+
+    //displayExceptionsForCobDate is missing until further information about data format is achieved
 
 }
