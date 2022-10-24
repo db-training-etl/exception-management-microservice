@@ -5,11 +5,11 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import java.sql.Date;
+import java.util.Date;
 
 @Data
 @Entity
-public class Exception {
+public class ExceptionLog {
 
     @Id
     @GeneratedValue(strategy=GenerationType.AUTO)
