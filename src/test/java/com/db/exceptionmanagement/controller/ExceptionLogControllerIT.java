@@ -74,7 +74,7 @@ public class ExceptionLogControllerIT {
 
     @Test
     public void saveOneLogToDB() throws Exception{
-        ExceptionLog exceptionLog = insertExampleLogs("AAA", "type1", "message1", "trace1", Date.from(Instant.now()));
+        ExceptionLog exceptionLog = getPostExampleLogs("AAA", "type1", "message1", "trace1", Date.from(Instant.now()));
 
         given(exceptionLogService.save(exceptionLog)).willAnswer((invocation) -> invocation.getArgument(0));
 
@@ -104,7 +104,7 @@ public class ExceptionLogControllerIT {
         return excp;
     }
 
-    public ExceptionLog insertExampleLogs(String name, String type, String message, String trace, Date cobDate){
+    public ExceptionLog getPostExampleLogs(String name, String type, String message, String trace, Date cobDate){
         ExceptionLog excp = new ExceptionLog();
         excp.setName(name);
         excp.setType(type);

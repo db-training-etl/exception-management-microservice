@@ -85,7 +85,7 @@ public class ExceptionLogServiceUT {
         return excp;
     }
 
-    public ExceptionLog insertExampleLogs(String name, String type, String message, String trace, Date cobDate){
+    public ExceptionLog getPostExampleLogs(String name, String type, String message, String trace, Date cobDate){
         ExceptionLog excp = new ExceptionLog();
         excp.setName(name);
         excp.setType(type);
