@@ -18,9 +18,11 @@ import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.ResultMatcher;
 
 import java.time.Instant;
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.Date;
 
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -49,7 +51,7 @@ public class ExceptionLogControllerIT {
 
     @Test
     public void findOneLogByIdTest() throws Exception {
-        ExceptionLog exceptionLog = getExampleLogs(1,"AAA", "type1", "message1", "trace1", new Date());
+        ExceptionLog exceptionLog = getExampleLogs(1,"AAA", "type1", "message1", "trace1", LocalDateTime.now());
 
         given(exceptionLogService.findById(1)).willReturn(Optional.ofNullable(exceptionLog));
 
@@ -74,7 +76,7 @@ public class ExceptionLogControllerIT {
 
     @Test
     public void saveOneLogToDB() throws Exception{
-        ExceptionLog exceptionLog = getPostExampleLogs("AAA", "type1", "message1", "trace1", Date.from(Instant.now()));
+        ExceptionLog exceptionLog = getPostExampleLogs("AAA", "type1", "message1", "trace1", LocalDateTime.now());
 
         given(exceptionLogService.save(exceptionLog)).willAnswer((invocation) -> invocation.getArgument(0));
 
@@ -85,14 +87,27 @@ public class ExceptionLogControllerIT {
         response.andExpect(status().isOk()).andDo(print());
     }
 
+    @Test
+    public void findLogByCobDate() throws Exception {
+        setExampleLogs();
+
+        given(exceptionLogService.findByCobDate(any())).willReturn(exceptionLogs);
+
+        ResultActions response = mockMvc.perform(post("/exceptions/filter")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString("{'cobDate' : "+exceptionLogs.get(0).getCobDate()+"}")));
+
+        response.andExpect(status().isOk()).andDo(print()).andExpect(jsonPath("$[0].name", is("AAA")));
+
+    }
     public void setExampleLogs(){
         exceptionLogs = new ArrayList<>();
-        exceptionLogs.add(getExampleLogs(null,"AAA", "type1", "message1", "trace1", Date.from(Instant.now())));
-        exceptionLogs.add(getExampleLogs(null,"BBB", "type2", "message2", "trace1", Date.from(Instant.now())));
-        exceptionLogs.add(getExampleLogs(null,"CCC", "type3", "message3", "trace1", Date.from(Instant.now())));
+        exceptionLogs.add(getExampleLogs(null,"AAA", "type1", "message1", "trace1", LocalDateTime.now()));
+        exceptionLogs.add(getExampleLogs(null,"BBB", "type2", "message2", "trace1", LocalDateTime.now()));
+        exceptionLogs.add(getExampleLogs(null,"CCC", "type3", "message3", "trace1", LocalDateTime.now()));
     }
 
-    public ExceptionLog getExampleLogs(Integer id, String name, String type, String message, String trace, Date cobDate){
+    public ExceptionLog getExampleLogs(Integer id, String name, String type, String message, String trace, LocalDateTime cobDate){
         ExceptionLog excp = new ExceptionLog();
         excp.setId(id);
         excp.setName(name);
@@ -104,7 +119,7 @@ public class ExceptionLogControllerIT {
         return excp;
     }
 
-    public ExceptionLog getPostExampleLogs(String name, String type, String message, String trace, Date cobDate){
+    public ExceptionLog getPostExampleLogs(String name, String type, String message, String trace, LocalDateTime cobDate){
         ExceptionLog excp = new ExceptionLog();
         excp.setName(name);
         excp.setType(type);
