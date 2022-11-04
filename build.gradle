@@ -61,3 +61,13 @@ jacocoTestCoverageVerification {
 check {
     dependsOn jacocoTestCoverageVerification // tests are required to run before generating the report
 }
+
+gradle.taskGraph.whenReady {
+    taskGraph ->
+        if (taskGraph.hasTask(stage)) {
+            test.enabled = false
+        }
+}
+
+task stage(dependsOn: ['build', 'clean'])
+build.mustRunAfter clean
