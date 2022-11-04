@@ -4,6 +4,7 @@ package com.db.exceptionmanagement.service;
 import com.db.exceptionmanagement.ExceptionManagementApplication;
 import com.db.exceptionmanagement.entity.ExceptionLog;
 import com.db.exceptionmanagement.repository.ExceptionLogRepository;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +14,10 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
+
+import static java.time.format.DateTimeFormatter.ISO_DATE_TIME;
+import static java.time.format.DateTimeFormatter.ISO_LOCAL_DATE_TIME;
+import static org.mockito.ArgumentMatchers.any;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -21,12 +26,17 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import static org.hamcrest.Matchers.is;
 import static org.mockito.BDDMockito.given;
+import static org.springframework.web.servlet.function.RequestPredicates.contentType;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.time.Instant;
-import java.util.ArrayList;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.*;
 import java.util.Date;
-import java.util.List;
-import java.util.Optional;
+
 
 @SpringBootTest(classes = ExceptionManagementApplication.class)
 @AutoConfigureMockMvc(addFilters = false)
@@ -79,7 +89,23 @@ public class ExceptionLogServiceIT {
         response.andExpect(status().isOk()).andDo(print());
     }
 
-    public void setExampleLogs(){
+    @Test
+    public void findAllExceptionLogsByCobDateTest() throws Exception {
+
+        setExampleLogs();
+
+        given(exceptionLogRepository.findByCobDate(any())).willReturn(exceptionLogs);
+
+        ResultActions response = mockMvc.perform(post("/exceptions/filter")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("{'cobDate' : '2022-10-21T09:25:28.568+00:00'}"));
+
+        response.andExpect(status().isOk()).andDo(print()).andExpect(jsonPath("$[0].name", is("AAA")));
+
+    }
+
+    public void setExampleLogs() throws ParseException {
+
         exceptionLogs = new ArrayList<>();
         exceptionLogs.add(getExampleLogs(null,"AAA", "type1", "message1", "trace1", Date.from(Instant.now())));
         exceptionLogs.add(getExampleLogs(null,"BBB", "type2", "message2", "trace1", Date.from(Instant.now())));

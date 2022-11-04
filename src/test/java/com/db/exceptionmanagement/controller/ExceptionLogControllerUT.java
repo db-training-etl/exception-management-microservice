@@ -5,6 +5,7 @@ import static org.mockito.Mockito.mock;
 import com.db.exceptionmanagement.entity.ExceptionLog;
 import com.db.exceptionmanagement.repository.ExceptionLogRepository;
 import com.db.exceptionmanagement.service.ExceptionLogService;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
@@ -14,7 +15,9 @@ import static org.mockito.Mockito.mock;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
+import java.text.ParseException;
 import java.time.Instant;
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.ArrayList;
 import java.util.List;
@@ -65,6 +68,23 @@ public class ExceptionLogControllerUT {
         given(exceptionLogService.findById(1)).willReturn(Optional.ofNullable(exceptionLog));
 
         assertEquals(exceptionLog, exceptionLogController.getExceptionLogById(1).get());
+    }
+    @Test
+    public void findLogByCobDateTest() throws ParseException, JsonProcessingException {
+        ExceptionLog exceptionLogMock = new ExceptionLog();
+        exceptionLogMock.setId(232);
+        exceptionLogMock.setName("nombre");
+        exceptionLogMock.setType("tipo");
+        exceptionLogMock.setMessage("bachata");
+        exceptionLogMock.setTrace("trasado");
+        exceptionLogMock.setCobDate(Date.from(Instant.now()));
+
+        List<ExceptionLog> resultMock = new ArrayList<>();
+
+        resultMock.add(exceptionLogMock);
+        given(exceptionLogService.findByCobDate(Date.from(Instant.now()).toString())).willReturn(resultMock);
+
+        assertEquals(resultMock, exceptionLogController.getExceptionLogsByDate(Date.from(Instant.now()).toString()));
     }
 
     @Test

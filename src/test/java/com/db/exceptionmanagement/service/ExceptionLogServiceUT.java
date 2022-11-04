@@ -2,16 +2,24 @@ package com.db.exceptionmanagement.service;
 
 import com.db.exceptionmanagement.entity.ExceptionLog;
 import com.db.exceptionmanagement.repository.ExceptionLogRepository;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 
 
+import java.text.ParseException;
 import java.time.Instant;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -47,7 +55,7 @@ public class ExceptionLogServiceUT {
 
     @Test
     public void findByIdTest(){
-        ExceptionLog exceptionLog = getExampleLogs(1,"AAA", "type1", "message1", "trace1", new Date());
+        ExceptionLog exceptionLog = getExampleLogs(1,"AAA", "type1", "message1", "trace1", Date.from(Instant.now()));
 
         given(exceptionLogRepository.findById(1)).willReturn(Optional.ofNullable(exceptionLog));
 
@@ -64,6 +72,24 @@ public class ExceptionLogServiceUT {
         given(exceptionLogRepository.save(exceptionLogMock)).willAnswer((invocation) -> invocation.getArgument(0));
 
         assertEquals(exceptionLogMock, exceptionLogService.save(exceptionLogMock));
+    }
+
+    @Test
+    public void findByCobDateTest() throws ParseException, JsonProcessingException {
+        ExceptionLog exceptionLogMock = new ExceptionLog();
+        exceptionLogMock.setId(232);
+        exceptionLogMock.setName("nombre");
+        exceptionLogMock.setType("tipo");
+        exceptionLogMock.setMessage("bachata");
+        exceptionLogMock.setTrace("trasado");
+        exceptionLogMock.setCobDate(Date.from(Instant.now()));
+
+        List<ExceptionLog> resultMock = new ArrayList<>();
+
+        resultMock.add(exceptionLogMock);
+        given(exceptionLogRepository.findByCobDate(any())).willReturn(resultMock);
+
+        assertEquals(resultMock, exceptionLogService.findByCobDate("{'cobDate' : '2022-10-21T09:25:29.232'}"));
     }
 
     public void setExampleLogs(){
@@ -95,5 +121,7 @@ public class ExceptionLogServiceUT {
 
         return excp;
     }
+
+
 
 }
