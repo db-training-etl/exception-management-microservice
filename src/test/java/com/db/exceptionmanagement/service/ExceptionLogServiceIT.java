@@ -35,6 +35,8 @@ import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
+import java.util.Date;
+
 
 @SpringBootTest(classes = ExceptionManagementApplication.class)
 @AutoConfigureMockMvc(addFilters = false)
@@ -51,7 +53,7 @@ public class ExceptionLogServiceIT {
 
     @Test
     public void findOneExceptionByIdTest() throws Exception{
-        ExceptionLog excp = getExampleLogs(null,"AAA", "type1", "message1", "trace1", LocalDateTime.now());
+        ExceptionLog excp = getExampleLogs(null,"AAA", "type1", "message1", "trace1", Date.from(Instant.now()));
 
         given(exceptionLogRepository.findById(1)).willReturn(Optional.ofNullable(excp));
 
@@ -76,7 +78,7 @@ public class ExceptionLogServiceIT {
 
     @Test
     public void saveOneExceptionLogTest() throws Exception{
-        ExceptionLog exceptionLog = getPostExampleLogs("AAA", "type1", "message1", "trace1", LocalDateTime.now());
+        ExceptionLog exceptionLog = getPostExampleLogs("AAA", "type1", "message1", "trace1", Date.from(Instant.now()));
 
         given(exceptionLogRepository.save(exceptionLog)).willAnswer((invocation) -> invocation.getArgument(0));
 
@@ -92,11 +94,11 @@ public class ExceptionLogServiceIT {
 
         setExampleLogs();
 
-        given(exceptionLogRepository.findByCobDate(new Date())).willReturn(exceptionLogs);
+        given(exceptionLogRepository.findByCobDate(any())).willReturn(exceptionLogs);
 
         ResultActions response = mockMvc.perform(post("/exceptions/filter")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content("{'cobDate' : '"+exceptionLogs.get(0).getCobDate()+"'}"));
+                .content("{'cobDate' : '2022-10-21T09:25:28.568+00:00'}"));
 
         response.andExpect(status().isOk()).andDo(print()).andExpect(jsonPath("$[0].name", is("AAA")));
 
@@ -104,24 +106,13 @@ public class ExceptionLogServiceIT {
 
     public void setExampleLogs() throws ParseException {
 
-        /*
-        Date cobDate = new Date();
-        String stringOfCobDate = new SimpleDateFormat("EEE MMM dd HH:mm:ss z yyyy").format(cobDate);
-        cobDate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(stringOfCobDate);
-        */
-        //TODO
-        //LocalDateTime cobDate = LocalDateTime.parse(LocalDateTime.now().format(ISO_DATE_TIME));
-        //DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS");
-
-        //cobDate = LocalDateTime.parse(String.valueOf(cobDate), formatter);
-
         exceptionLogs = new ArrayList<>();
-        exceptionLogs.add(getExampleLogs(null,"AAA", "type1", "message1", "trace1", LocalDateTime.now()));
-        exceptionLogs.add(getExampleLogs(null,"BBB", "type2", "message2", "trace1", LocalDateTime.now()));
-        exceptionLogs.add(getExampleLogs(null,"CCC", "type3", "message3", "trace1", LocalDateTime.now()));
+        exceptionLogs.add(getExampleLogs(null,"AAA", "type1", "message1", "trace1", Date.from(Instant.now())));
+        exceptionLogs.add(getExampleLogs(null,"BBB", "type2", "message2", "trace1", Date.from(Instant.now())));
+        exceptionLogs.add(getExampleLogs(null,"CCC", "type3", "message3", "trace1", Date.from(Instant.now())));
     }
 
-    public ExceptionLog getExampleLogs(Integer id, String name, String type, String message, String trace, LocalDateTime cobDate){
+    public ExceptionLog getExampleLogs(Integer id, String name, String type, String message, String trace, Date cobDate){
         ExceptionLog excp = new ExceptionLog();
         excp.setId(id);
         excp.setName(name);
@@ -133,7 +124,7 @@ public class ExceptionLogServiceIT {
         return excp;
     }
 
-    public ExceptionLog getPostExampleLogs(String name, String type, String message, String trace, LocalDateTime cobDate){
+    public ExceptionLog getPostExampleLogs(String name, String type, String message, String trace, Date cobDate){
         ExceptionLog excp = new ExceptionLog();
         excp.setName(name);
         excp.setType(type);

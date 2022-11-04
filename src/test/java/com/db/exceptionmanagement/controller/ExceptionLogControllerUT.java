@@ -50,7 +50,7 @@ public class ExceptionLogControllerUT {
         exceptionLogMock.setType("tipo");
         exceptionLogMock.setMessage("bachata");
         exceptionLogMock.setTrace("trasado");
-        exceptionLogMock.setCobDate(LocalDateTime.now());
+        exceptionLogMock.setCobDate(Date.from(Instant.now()));
 
         List<ExceptionLog> resultMock = new ArrayList<>();
 
@@ -63,7 +63,7 @@ public class ExceptionLogControllerUT {
 
     @Test
     public void findLogByIdTest(){
-        ExceptionLog exceptionLog = getExampleLogs(1,"AAA", "type1", "message1", "trace1", LocalDateTime.now());
+        ExceptionLog exceptionLog = getExampleLogs(1,"AAA", "type1", "message1", "trace1", Date.from(Instant.now()));
 
         given(exceptionLogService.findById(1)).willReturn(Optional.ofNullable(exceptionLog));
 
@@ -77,7 +77,7 @@ public class ExceptionLogControllerUT {
         exceptionLogMock.setType("tipo");
         exceptionLogMock.setMessage("bachata");
         exceptionLogMock.setTrace("trasado");
-        exceptionLogMock.setCobDate(LocalDateTime.now());
+        exceptionLogMock.setCobDate(Date.from(Instant.now()));
 
         List<ExceptionLog> resultMock = new ArrayList<>();
 
@@ -101,12 +101,12 @@ public class ExceptionLogControllerUT {
 
     public void setExampleLogs(){
         exceptionLogs = new ArrayList<>();
-        exceptionLogs.add(getExampleLogs(null,"AAA", "type1", "message1", "trace1", LocalDateTime.now()));
-        exceptionLogs.add(getExampleLogs(null,"BBB", "type2", "message2", "trace1", LocalDateTime.now()));
-        exceptionLogs.add(getExampleLogs(null,"CCC", "type3", "message3", "trace1", LocalDateTime.now()));
+        exceptionLogs.add(getExampleLogs(null,"AAA", "type1", "message1", "trace1", Date.from(Instant.now())));
+        exceptionLogs.add(getExampleLogs(null,"BBB", "type2", "message2", "trace1", Date.from(Instant.now())));
+        exceptionLogs.add(getExampleLogs(null,"CCC", "type3", "message3", "trace1", Date.from(Instant.now())));
     }
 
-    public ExceptionLog getExampleLogs(Integer id, String name, String type, String message, String trace, LocalDateTime cobDate){
+    public ExceptionLog getExampleLogs(Integer id, String name, String type, String message, String trace, Date cobDate){
         ExceptionLog excp = new ExceptionLog();
         excp.setId(id);
         excp.setName(name);
@@ -118,7 +118,7 @@ public class ExceptionLogControllerUT {
         return excp;
     }
 
-    public ExceptionLog getPostExampleLogs(String name, String type, String message, String trace, LocalDateTime cobDate){
+    public ExceptionLog getPostExampleLogs(String name, String type, String message, String trace, Date cobDate){
         ExceptionLog excp = new ExceptionLog();
         excp.setName(name);
         excp.setType(type);

@@ -38,7 +38,7 @@ public class ExceptionLogService {
 
         JsonObject jsonDate = JsonParser.parseString(filter).getAsJsonObject();
 
-        SimpleDateFormat format =  new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        SimpleDateFormat format =  new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS");
         Date cobDate = format.parse(jsonDate.get("cobDate").getAsString());
 
         return exceptionLogRepository.findByCobDate(cobDate);

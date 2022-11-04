@@ -19,6 +19,6 @@ public class ExceptionLog {
     String type;
     String message;
     String trace;
-    LocalDateTime cobDate;
+    Date cobDate;
 
 }
