@@ -5,6 +5,7 @@ import com.db.exceptionmanagement.repository.ExceptionLogRepository;
 import com.db.exceptionmanagement.service.ExceptionLogService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.util.JSONPObject;
+import lombok.Data;
 import net.bytebuddy.implementation.bind.MethodDelegationBinder;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
