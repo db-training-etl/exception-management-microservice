@@ -23,7 +23,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-public class ExceptionLogControllerUT {
+public class ExceptionLogControllerTest {
 
     ExceptionLogController exceptionLogController;
 

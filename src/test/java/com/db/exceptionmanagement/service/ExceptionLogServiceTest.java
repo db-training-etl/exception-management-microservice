@@ -27,7 +27,7 @@ import java.util.Optional;
 
 import static org.mockito.Mockito.mock;
 
-public class ExceptionLogServiceUT {
+public class ExceptionLogServiceTest {
 
     ExceptionLogRepository exceptionLogRepository;
 
